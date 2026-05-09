@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nura Health | Your AI Health Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body data-theme="light">
+
+    <div class="app-container">
+        
+        <!-- FLOATING CLOUDS BACKGROUND -->
+        <div class="sky-bg" id="sky-bg"></div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><i class="fa-solid fa-heart-pulse"></i> Nura Health</div>
+            </div>
+            <button class="new-chat-btn"><i class="fa-solid fa-plus"></i> New Chat</button>
+            
+            <div class="sidebar-menu">
+                <div class="menu-category">Today</div>
+                <a href="#" class="menu-item active"><i class="fa-solid fa-message"></i> General Query</a>
+                <a href="#" class="menu-item"><i class="fa-solid fa-message"></i> Nutrition Tips</a>
+                
+                <div class="menu-category">Yesterday</div>
+                <a href="#" class="menu-item"><i class="fa-solid fa-message"></i> Sleep Routine</a>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-btn">
+                    <i class="fa-solid fa-moon"></i> Dark Mode
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            
+            <!-- Top Navigation (Mobile) -->
+            <nav class="top-nav">
+                <button id="sidebar-toggle" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <div class="top-logo">Nura Health</div>
+                <div class="top-spacer"></div>
+            </nav>
+
+            <!-- Chat Body -->
+            <div class="chat-body" id="chat-body">
+                
+                <!-- Welcome Screen -->
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-icon"><i class="fa-solid fa-staff-snake"></i></div>
+                    <h1>How can I help you today?</h1>
+                    <p>I am Nura Health, your AI medical assistant. Ask me anything about general wellness, symptoms, or nutrition.</p>
+                    
+                    <div class="suggestions-grid">
+                        <button class="suggestion-card" onclick="useSuggestion('What causes a sore throat?')">
+                            <div class="sugg-icon"><i class="fa-solid fa-lungs"></i></div>
+                            <div class="sugg-text">What causes a sore throat?</div>
+                        </button>
+                        <button class="suggestion-card" onclick="useSuggestion('Is paracetamol safe for children?')">
+                            <div class="sugg-icon"><i class="fa-solid fa-pills"></i></div>
+                            <div class="sugg-text">Is paracetamol safe for children?</div>
+                        </button>
+                        <button class="suggestion-card" onclick="useSuggestion('Tips for better sleep')">
+                            <div class="sugg-icon"><i class="fa-solid fa-bed"></i></div>
+                            <div class="sugg-text">Tips for better sleep</div>
+                        </button>
+                        <button class="suggestion-card" onclick="useSuggestion('Daily vitamin requirements')">
+                            <div class="sugg-icon"><i class="fa-solid fa-apple-whole"></i></div>
+                            <div class="sugg-text">Daily vitamin requirements</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages will append here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="Message Nura Health..." autocomplete="off">
+                    <button id="send-btn" class="send-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                </div>
+                <p class="disclaimer">Nura Health can make mistakes. Verify important info with a doctor.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../static/js/script.js"></script>
+</body>
+</html>
