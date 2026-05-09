@@ -7,9 +7,17 @@ const sidebar = document.getElementById('sidebar');
 const sidebarToggle = document.getElementById('sidebar-toggle');
 const themeToggle = document.getElementById('theme-toggle');
 const skyBg = document.getElementById('sky-bg');
+const newChatBtn = document.getElementById('new-chat-btn');
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 // --- Generate Floating Clouds ---
 function createClouds() {
+    if (!skyBg) return;
     for(let i = 0; i < 6; i++) {
         const cloud = document.createElement('div');
         cloud.classList.add('cloud');
@@ -33,6 +41,18 @@ function createClouds() {
     }
 }
 createClouds();
+
+if (newChatBtn) {
+    newChatBtn.addEventListener('click', () => {
+        userInput.value = '';
+        document.querySelectorAll('.chat-body .message').forEach((el) => el.remove());
+        if (welcomeScreen) {
+            welcomeScreen.style.display = '';
+        }
+        if (sidebar) sidebar.classList.remove('active');
+        userInput.focus();
+    });
+}
 
 // --- Theme Toggle (Dark/Light Mode) ---
 themeToggle.addEventListener('click', () => {
@@ -59,7 +79,7 @@ document.addEventListener('click', (e) => {
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-function sendMessage() {
+async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
 
@@ -67,20 +87,42 @@ function sendMessage() {
 
     appendMessage(text, 'user');
     userInput.value = '';
+
     showTypingIndicator();
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: text })
+        });
+
+        let data = {};
+        try {
+            data = await response.json();
+        } catch {
+            removeTypingIndicator();
+            typeMessage("❌ Invalid response from server.");
+            return;
+        }
         removeTypingIndicator();
-        const botResponse = generateMockResponse(text);
-        typeMessage(botResponse);
-    }, 1500);
+        if (!response.ok) {
+            typeMessage(data.response || `Server error (${response.status}).`);
+            return;
+        }
+        typeMessage(data.response || "No reply from server.");
+    } catch (error) {
+        removeTypingIndicator();
+        typeMessage("❌ Connection error. Please check if the server is running.");
+    }
 }
 
 function appendMessage(text, sender) {
     const div = document.createElement('div');
     div.classList.add('message', sender);
     const icon = sender === 'bot' ? 'fa-robot' : 'fa-user';
-    div.innerHTML = `<div class="msg-avatar"><i class="fa-solid ${icon}"></i></div><div class="msg-bubble">${text}</div>`;
+    const safeText = escapeHtml(text);
+    div.innerHTML = `<div class="msg-avatar"><i class="fa-solid ${icon}"></i></div><div class="msg-bubble">${safeText}</div>`;
     chatBody.appendChild(div);
     scrollToBottom();
 }
@@ -121,14 +163,7 @@ function removeTypingIndicator() {
 
 function scrollToBottom() { chatBody.scrollTop = chatBody.scrollHeight; }
 
-function useSuggestion(text) { userInput.value = text; sendMessage(); }
-
-function generateMockResponse(query) {
-    if (query.toLowerCase().includes('sore throat')) {
-        return "A sore throat can be caused by viral infections (like colds), bacterial infections, allergies, or dry air. Resting your voice and drinking warm liquids can help. If it persists, consult a doctor.";
-    } else if (query.toLowerCase().includes('paracetamol')) {
-        return "Paracetamol is generally safe for children when given in the correct dosage based on their weight and age. However, always consult a pediatrician before administering any medication to a child.";
-    } else {
-        return "I am processing your query. As a mock UI, my responses are limited right now. Once connected to the Nura Health backend AI, I will provide detailed health insights based on your questions.";
-    }
+function useSuggestion(text) {
+    userInput.value = text;
+    void sendMessage();
 }
